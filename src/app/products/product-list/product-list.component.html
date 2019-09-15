@@ -1,0 +1,40 @@
+<h2>
+    {{ title }}
+</h2>
+
+<div>
+    <a routerLink="insert">New product...</a> | {{ productsNb }} products
+</div>
+
+<div class="errorMessage" *ngIf="errorMsg">
+    {{ errorMsg }}
+</div>
+
+<ng-template #loading>
+    <h2>Loading products...</h2>
+</ng-template>
+
+<ul class="products" *ngIf="products$ | async as products;else loading">
+    <li *ngFor="let product of products | slice:start:end"
+        [title]="product | json"
+        [class.discontinued]="product.discontinued"
+        [class.selected]="selectedProduct === product"
+        (click)="onSelect(product)">
+        <span class="name">{{ product.name | uppercase }}</span>
+        <span class="description">{{ product.description }}</span>
+        <span class="price">{{ product.price | currency:'CAD':'symbol-narrow':'.2' }}</span>
+    </li>
+</ul>
+
+<div>
+    <button (click)="previousPage()" [disabled]="start === 0">
+        < Previous Page
+    </button>
+    Page {{ currentPage }}
+    <button (click)="nextPage()" [disabled]="productsNb <= end">
+        Next Page >
+    </button>
+</div>
+
+<app-product-detail
+[product]="selectedProduct"></app-product-detail>
